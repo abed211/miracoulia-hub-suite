@@ -1,10 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Download, Play } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroBg from "@/assets/hero-bg.jpg";
-import posMockup from "@/assets/pos-mockup.png";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import heroBgDefault from "@/assets/hero-bg.jpg";
+import posMockupDefault from "@/assets/pos-mockup.png";
 
 export function HeroSection() {
+  const { data: heroContent } = useQuery({
+    queryKey: ['hero-content'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('hero_content')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const title = heroContent?.title || "حلول برمجية متكاملة";
+  const subtitle = heroContent?.subtitle || "لإدارة أعمالك";
+  const description = heroContent?.description || "نقدم حلول برمجية متكاملة لإدارة أعمالك بكفاءة عالية، من أنظمة نقاط البيع إلى التسويق الرقمي المتقدم";
+  const buttonText = heroContent?.button_text || "تحميل البرنامج";
+  const buttonLink = heroContent?.button_link || "/products/miracolia-pos";
+  const heroBg = heroContent?.image_url || heroBgDefault;
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background */}
@@ -31,22 +56,22 @@ export function HeroSection() {
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight font-tajawal">
-              حلول برمجية متكاملة
+              {title}
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-l from-cyan to-primary">
-                لإدارة أعمالك
+                {subtitle}
               </span>
             </h1>
             
             <p className="text-lg md:text-xl text-primary-foreground/80 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              نقدم حلول برمجية متكاملة لإدارة أعمالك بكفاءة عالية، من أنظمة نقاط البيع إلى التسويق الرقمي المتقدم
+              {description}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link to="/products/miracolia-pos">
+              <Link to={buttonLink}>
                 <Button variant="hero" size="lg" className="w-full sm:w-auto">
                   <Download className="h-5 w-5" />
-                  تحميل البرنامج
+                  {buttonText}
                 </Button>
               </Link>
               <Link to="/contact">
@@ -80,7 +105,7 @@ export function HeroSection() {
           <div className="relative hidden lg:block">
             <div className="relative animate-float">
               <img
-                src={posMockup}
+                src={posMockupDefault}
                 alt="برنامج ميراكوليا"
                 className="w-full max-w-lg mx-auto drop-shadow-2xl"
               />
