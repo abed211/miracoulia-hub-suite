@@ -1,6 +1,8 @@
 import { Star, Quote } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
-const testimonials = [
+const defaultTestimonials = [
   {
     name: "أحمد محمد",
     role: "صاحب سوبرماركت",
@@ -25,6 +27,22 @@ const testimonials = [
 ];
 
 export function TestimonialsSection() {
+  const { data: testimonials } = useQuery({
+    queryKey: ['testimonials'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('testimonials')
+        .select('*')
+        .eq('is_active', true)
+        .order('order_index', { ascending: true });
+      
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const displayTestimonials = testimonials && testimonials.length > 0 ? testimonials : defaultTestimonials;
+
   return (
     <section className="py-24 bg-navy text-primary-foreground overflow-hidden">
       <div className="container">
@@ -43,7 +61,7 @@ export function TestimonialsSection() {
 
         {/* Testimonials Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
+          {displayTestimonials.map((testimonial, index) => (
             <div
               key={index}
               className="bg-primary-foreground/5 backdrop-blur-sm rounded-2xl p-8 border border-primary-foreground/10 hover:bg-primary-foreground/10 transition-colors"
@@ -58,7 +76,7 @@ export function TestimonialsSection() {
 
               {/* Rating */}
               <div className="flex gap-1 mb-4">
-                {[...Array(testimonial.rating)].map((_, i) => (
+                {[...Array(testimonial.rating || 5)].map((_, i) => (
                   <Star key={i} className="h-5 w-5 fill-gold text-gold" />
                 ))}
               </div>
