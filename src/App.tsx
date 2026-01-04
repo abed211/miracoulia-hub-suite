@@ -13,6 +13,12 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminSetup from "./pages/admin/AdminSetup";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminHero from "./pages/admin/AdminHero";
+import AdminProducts from "./pages/admin/AdminProducts";
+import AdminArticles from "./pages/admin/AdminArticles";
+import AdminMessages from "./pages/admin/AdminMessages";
+import AdminFiles from "./pages/admin/AdminFiles";
+import AdminSettings from "./pages/admin/AdminSettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,12 +42,12 @@ const App = () => (
           <Route path="/admin/setup" element={<AdminSetup />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="hero" element={<AdminDashboard />} />
-            <Route path="products" element={<AdminDashboard />} />
-            <Route path="articles" element={<AdminDashboard />} />
-            <Route path="messages" element={<AdminDashboard />} />
-            <Route path="files" element={<AdminDashboard />} />
-            <Route path="settings" element={<AdminDashboard />} />
+            <Route path="hero" element={<AdminHero />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="articles" element={<AdminArticles />} />
+            <Route path="messages" element={<AdminMessages />} />
+            <Route path="files" element={<AdminFiles />} />
+            <Route path="settings" element={<AdminSettings />} />
           </Route>
           
           <Route path="*" element={<NotFound />} />
